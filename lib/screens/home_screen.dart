@@ -1,7 +1,8 @@
-import 'package:controle_financeiro/screens/transitionItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'transitionItem.dart';
 import 'add_transaction.dart';
+import 'package:intl/intl.dart'; // Para formatar a data
 
 enum TransactionType { receitas, despesas }
 
@@ -9,6 +10,9 @@ final transactionTypeProvider = StateProvider<TransactionType>((ref) => Transact
 
 // Armazena as transações localmente
 final transactionsProvider = StateProvider<List<Map<String, dynamic>>>((ref) => []);
+
+// Seleciona o mês
+final selectedMonthProvider = StateProvider<String>((ref) => 'Setembro');
 
 // Calcula o saldo com base nas transações
 final balanceProvider = Provider<double>((ref) {
@@ -27,18 +31,21 @@ final balanceProvider = Provider<double>((ref) {
 });
 
 class MyHomePage extends ConsumerWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionType = ref.watch(transactionTypeProvider);
     final transactions = ref.watch(transactionsProvider);
-    final balance = ref.watch(balanceProvider);  // Obtém o saldo atualizado
+    final balance = ref.watch(balanceProvider);
+    final selectedMonth = ref.watch(selectedMonthProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Seu Saldo'),
+        title: const Text('Seu Saldo'),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications_none),
+            icon: const Icon(Icons.notifications_none),
             onPressed: () {},
           ),
         ],
@@ -50,13 +57,13 @@ class MyHomePage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'R\$ ${balance.toStringAsFixed(2)}',  // Exibe o saldo atualizado
-                style: TextStyle(
+                'R\$ ${balance.toStringAsFixed(2)}',
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   Expanded(
@@ -64,44 +71,68 @@ class MyHomePage extends ConsumerWidget {
                       onPressed: () {
                         ref.read(transactionTypeProvider.notifier).state = TransactionType.despesas;
                       },
-                      child: Text('Despesas'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: transactionType == TransactionType.despesas ? Colors.green : Colors.grey,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
+                      child: const Text('Despesas'),
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
                         ref.read(transactionTypeProvider.notifier).state = TransactionType.receitas;
                       },
-                      child: Text('Receitas'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: transactionType == TransactionType.receitas ? Colors.green : Colors.grey,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
+                      child: const Text('Receitas'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: DropdownButton<String>(
+                      value: selectedMonth,
+                      icon: const Icon(Icons.arrow_drop_down),
+                      underline: const SizedBox(),
+                      onChanged: (String? newValue) {
+                        ref.read(selectedMonthProvider.notifier).state = newValue!;
+                      },
+                      items: <String>[
+                        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto',
+                        'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 32),
-              Text(
+              const SizedBox(height: 32),
+              const Text(
                 'Transações',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16),
-              // Exibe apenas as transações do tipo selecionado
+              const SizedBox(height: 16),
+              // Exibe apenas as transações do tipo selecionado e do mês selecionado
               Column(
                 children: transactions
-                    .where((transaction) =>
-                transaction['type'] == (transactionType == TransactionType.despesas ? 'despesa' : 'receita'))
+                    .where((transaction) {
+                  final transactionDate = transaction['date'] as DateTime;
+                  final transactionMonth = DateFormat('MMMM').format(transactionDate);
+                  return transaction['type'] == (transactionType == TransactionType.despesas ? 'despesa' : 'receita') &&
+                      transactionMonth == selectedMonth;
+                })
                     .map((transaction) => TransactionItem(
                   icon: transaction['icon'],
                   title: transaction['title'],
@@ -111,14 +142,13 @@ class MyHomePage extends ConsumerWidget {
                 ))
                     .toList(),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Abre o formulário para adicionar nova transação
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -126,22 +156,18 @@ class MyHomePage extends ConsumerWidget {
             },
           );
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.green,
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance_wallet),
             label: 'Carteira',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
-            label: 'Gráfico',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.more_vert),
-            label: 'Mais',
+            label: 'Relatórios',
           ),
         ],
       ),

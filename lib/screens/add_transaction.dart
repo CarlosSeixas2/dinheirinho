@@ -17,14 +17,14 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Nova Transação'),
+      title: const Text('Nova Transação'),
       content: Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextFormField(
-              decoration: InputDecoration(labelText: 'Título'),
+              decoration: const InputDecoration(labelText: 'Título'),
               onSaved: (value) {
                 _title = value ?? '';
               },
@@ -36,13 +36,13 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Descrição'),
+              decoration: const InputDecoration(labelText: 'Descrição'),
               onSaved: (value) {
                 _subtitle = value ?? '';
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Valor'),
+              decoration: const InputDecoration(labelText: 'Valor'),
               keyboardType: TextInputType.number,
               onSaved: (value) {
                 _value = double.tryParse(value ?? '0') ?? 0;
@@ -71,7 +71,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancelar'),
+          child: const Text('Cancelar'),
         ),
         TextButton(
           onPressed: () {
@@ -92,7 +92,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
               Navigator.of(context).pop();
             }
           },
-          child: Text('Salvar'),
+          child: const Text('Salvar'),
         ),
       ],
     );

@@ -7,7 +7,7 @@ class TransactionItem extends StatelessWidget {
   final String value;
   final bool isPositive;
 
-  TransactionItem({
+  const TransactionItem({super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -18,7 +18,7 @@ class TransactionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
         children: [
           CircleAvatar(
@@ -28,18 +28,18 @@ class TransactionItem extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 subtitle,
                 style: TextStyle(
@@ -49,7 +49,7 @@ class TransactionItem extends StatelessWidget {
               ),
             ],
           ),
-          Spacer(),
+          const Spacer(),
           Text(
             value,
             style: TextStyle(
