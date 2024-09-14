@@ -10,11 +10,28 @@ final transactionTypeProvider = StateProvider<TransactionType>((ref) => Transact
 // Armazena as transações localmente
 final transactionsProvider = StateProvider<List<Map<String, dynamic>>>((ref) => []);
 
+// Calcula o saldo com base nas transações
+final balanceProvider = Provider<double>((ref) {
+  final transactions = ref.watch(transactionsProvider);
+  double balance = 0.0;
+
+  for (var transaction in transactions) {
+    if (transaction['type'] == 'receita') {
+      balance += transaction['value'];
+    } else {
+      balance -= transaction['value'];
+    }
+  }
+
+  return balance;
+});
+
 class MyHomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionType = ref.watch(transactionTypeProvider);
     final transactions = ref.watch(transactionsProvider);
+    final balance = ref.watch(balanceProvider);  // Obtém o saldo atualizado
 
     return Scaffold(
       appBar: AppBar(
@@ -33,7 +50,7 @@ class MyHomePage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'R\$ 500,00',
+                'R\$ ${balance.toStringAsFixed(2)}',  // Exibe o saldo atualizado
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -89,7 +106,7 @@ class MyHomePage extends ConsumerWidget {
                   icon: transaction['icon'],
                   title: transaction['title'],
                   subtitle: transaction['subtitle'],
-                  value: 'R\$ ${transaction['value']}',
+                  value: 'R\$ ${transaction['value'].toStringAsFixed(2)}',
                   isPositive: transaction['type'] == 'receita',
                 ))
                     .toList(),
