@@ -1,5 +1,5 @@
-import 'package:controle_financeiro/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import '../providers/transaction_provider.dart'; // Certifique-se de que o caminho está correto
 
 class TransactionToggle extends StatelessWidget {
   final TransactionType transactionType;
@@ -21,7 +21,6 @@ class TransactionToggle extends StatelessWidget {
       width: 240,
       height: 60,
       padding: const EdgeInsets.all(4),
-      // Substituído por TransactionToggle
       child: Row(
         children: [
           Expanded(
@@ -35,7 +34,6 @@ class TransactionToggle extends StatelessWidget {
                     : const Color(0xFF121212),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                // Tirar a sombra do botão
                 elevation: 0,
               ),
               child: Text(
