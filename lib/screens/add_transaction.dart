@@ -86,6 +86,7 @@ class _AddTransactionDialogState extends ConsumerState<AddTransactionDialog> {
                   'value': _value,
                   'type': _isReceita ? 'receita' : 'despesa',
                   'icon': _isReceita ? Icons.attach_money : Icons.money_off,
+                  'date': DateTime.now(),
                 }
               ];
 
