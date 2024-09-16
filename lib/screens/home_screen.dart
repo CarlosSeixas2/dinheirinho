@@ -1,22 +1,22 @@
+import 'package:controle_financeiro/screens/transitionItem.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Para usar o Riverpod
 import '../providers/transaction_provider.dart';
 import '../widgets/custom_bottom_bar.dart';
 import '../widgets/transaction_toggle.dart';
-import 'transitionItem.dart';
 import 'add_transaction.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends ConsumerWidget { // ConsumerWidget para acessar os providers
   const MyHomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final transactionProvider = Provider.of<TransactionProvider>(context);
-    final transactions = transactionProvider.transactions;
-    final balance = transactionProvider.balance;
-    final transactionType = transactionProvider.transactionType;
-    final selectedMonth = transactionProvider.selectedMonth;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final transactionNotifier = ref.watch(transactionProvider.notifier); // Acessa o notifier
+    final transactions = ref.watch(transactionProvider).transactions; // Acessa o estado
+    final balance = ref.watch(transactionProvider).balance;
+    final transactionType = ref.watch(transactionProvider).transactionType;
+    final selectedMonth = ref.watch(transactionProvider).selectedMonth;
 
     return Scaffold(
       backgroundColor: const Color(0xFF000000),
@@ -28,7 +28,7 @@ class MyHomePage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              transactionProvider.formatToReal(balance),
+              transactionNotifier.formatToReal(balance),
               style: const TextStyle(
                   fontSize: 24,
                   color: Color(0xFFFFFFFF),
@@ -73,7 +73,7 @@ class MyHomePage extends StatelessWidget {
                   TransactionToggle(
                     transactionType: transactionType,
                     onToggle: (type) {
-                      transactionProvider.setTransactionType(type);
+                      ref.read(transactionProvider.notifier).setTransactionType(type); // Atualiza o tipo de transação
                     },
                   ),
                   const SizedBox(width: 16),
@@ -94,8 +94,8 @@ class MyHomePage extends StatelessWidget {
                           icon: const Icon(Icons.arrow_drop_down),
                           underline: const SizedBox(),
                           onChanged: (String? newValue) {
-                            if (newValue != null && newValue is TransactionType) {
-                              transactionProvider.setSelectedMonth(newValue);
+                            if (newValue != null) {
+                              ref.read(transactionProvider.notifier).setSelectedMonth(newValue); // Atualiza o mês selecionado
                             }
                           },
                           items: <String>[
@@ -160,7 +160,7 @@ class MyHomePage extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const AddTransactionDialog();
+              return const AddTransactionDialog(); // Abre o diálogo de adicionar transação
             },
           );
         },
