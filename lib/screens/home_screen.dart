@@ -1,3 +1,4 @@
+import 'package:controle_financeiro/helpers/local_persistence.dart';
 import 'package:controle_financeiro/screens/transitionItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // Para usar o Riverpod
@@ -7,13 +8,16 @@ import '../widgets/transaction_toggle.dart';
 import 'add_transaction.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class MyHomePage extends ConsumerWidget { // ConsumerWidget para acessar os providers
+class MyHomePage extends ConsumerWidget {
+  // ConsumerWidget para acessar os providers
   const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactionNotifier = ref.watch(transactionProvider.notifier); // Acessa o notifier
-    final transactions = ref.watch(transactionProvider).transactions; // Acessa o estado
+    final transactionNotifier =
+        ref.watch(transactionProvider.notifier); // Acessa o notifier
+    final transactions =
+        ref.watch(transactionProvider).transactions; // Acessa o estado
     final balance = ref.watch(transactionProvider).balance;
     final transactionType = ref.watch(transactionProvider).transactionType;
     final selectedMonth = ref.watch(transactionProvider).selectedMonth;
@@ -51,11 +55,11 @@ class MyHomePage extends ConsumerWidget { // ConsumerWidget para acessar os prov
               // Ação ao clicar
             },
             child: SvgPicture.asset(
-              'lib/assets/icons/bell.svg',
+              'assets/icons/bell.svg',
               width: 20,
               height: 20,
               colorFilter:
-              const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
+                  const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
             ),
           ),
           const SizedBox(width: 16),
@@ -73,7 +77,8 @@ class MyHomePage extends ConsumerWidget { // ConsumerWidget para acessar os prov
                   TransactionToggle(
                     transactionType: transactionType,
                     onToggle: (type) {
-                      ref.read(transactionProvider.notifier).setTransactionType(type); // Atualiza o tipo de transação
+                      ref.read(transactionProvider.notifier).setTransactionType(
+                          type); // Atualiza o tipo de transação
                     },
                   ),
                   const SizedBox(width: 16),
@@ -95,7 +100,10 @@ class MyHomePage extends ConsumerWidget { // ConsumerWidget para acessar os prov
                           underline: const SizedBox(),
                           onChanged: (String? newValue) {
                             if (newValue != null) {
-                              ref.read(transactionProvider.notifier).setSelectedMonth(newValue); // Atualiza o mês selecionado
+                              ref
+                                  .read(transactionProvider.notifier)
+                                  .setSelectedMonth(
+                                      newValue); // Atualiza o mês selecionado
                             }
                           },
                           items: <String>[
@@ -135,22 +143,45 @@ class MyHomePage extends ConsumerWidget { // ConsumerWidget para acessar os prov
               Column(
                 children: transactions
                     .where((transaction) {
-                  return transaction['type'] ==
-                      (transactionType == TransactionType.despesas
-                          ? 'despesa'
-                          : 'receita');
-                })
+                      return transaction['type'] ==
+                          (transactionType == TransactionType.despesas
+                              ? 'despesa'
+                              : 'receita');
+                    })
                     .map((transaction) => TransactionItem(
-                  icon: transaction['icon'],
-                  title: transaction['title'],
-                  subtitle: transaction['subtitle'],
-                  value:
-                  'R\$ ${transaction['value'].toStringAsFixed(2)}',
-                  isPositive: transaction['type'] == 'receita',
-                ))
+                          // icon: transaction['icon'],
+                          // description: transaction['description'],
+                          value:
+                              'R\$ ${transaction['value'].toStringAsFixed(2)}',
+                          isPositive: transaction['type'] == 'receita',
+                        ))
                     .toList(),
               ),
               const SizedBox(height: 32),
+              // Criar botão para limpar as transações
+              GestureDetector(
+                onTap: () {
+                  LocalPersistence.clearList(
+                      'transactions'); // Limpa as transações salvas
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF24F07D),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Limpar Transações',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
