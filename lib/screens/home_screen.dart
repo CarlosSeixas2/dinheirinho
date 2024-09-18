@@ -1,8 +1,9 @@
 import 'package:controle_financeiro/helpers/local_persistence.dart';
 import 'package:controle_financeiro/screens/transitionItem.dart';
+import 'package:controle_financeiro/widgets/transaction_graphic.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Para usar o Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/transaction_provider.dart';
 import '../widgets/custom_bottom_bar.dart';
 import '../widgets/transaction_toggle.dart';
@@ -10,15 +11,12 @@ import 'add_transaction.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomePage extends ConsumerWidget {
-  // ConsumerWidget para acessar os providers
   const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactionNotifier =
-        ref.watch(transactionProvider.notifier); // Acessa o notifier
-    final transactions =
-        ref.watch(transactionProvider).transactions; // Acessa o estado
+    final transactionNotifier = ref.watch(transactionProvider.notifier);
+    final transactions = ref.watch(transactionProvider).transactions;
     final balance = ref.watch(transactionProvider).balance;
     final transactionType = ref.watch(transactionProvider).transactionType;
     final selectedMonth = ref.watch(transactionProvider).selectedMonth;
@@ -28,15 +26,18 @@ class MyHomePage extends ConsumerWidget {
       appBar: AppBar(
         toolbarHeight: 80,
         backgroundColor: const Color(0xFF000000),
+        surfaceTintColor: const Color(0xFF000000),
         elevation: 0,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               transactionNotifier.formatToReal(balance),
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 24,
-                  color: Color(0xFFFFFFFF),
+                  color: balance >= 0
+                      ? const Color(0xFF24F07D)
+                      : const Color(0xFFE33E3E),
                   fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
@@ -78,8 +79,9 @@ class MyHomePage extends ConsumerWidget {
                   TransactionToggle(
                     transactionType: transactionType,
                     onToggle: (type) {
-                      ref.read(transactionProvider.notifier).setTransactionType(
-                          type); // Atualiza o tipo de transação
+                      ref
+                          .read(transactionProvider.notifier)
+                          .setTransactionType(type);
                     },
                   ),
                   const SizedBox(width: 16),
@@ -103,8 +105,7 @@ class MyHomePage extends ConsumerWidget {
                             if (newValue != null) {
                               ref
                                   .read(transactionProvider.notifier)
-                                  .setSelectedMonth(
-                                      newValue); // Atualiza o mês selecionado
+                                  .setSelectedMonth(newValue);
                             }
                           },
                           items: <String>[
@@ -133,6 +134,12 @@ class MyHomePage extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 32),
+              TransactionGraphicWidget(
+                transactionType: transactionType,
+                transactions: transactions,
+                transactionNotifier: transactionNotifier,
+              ),
+              const SizedBox(height: 32),
               const Text(
                 'Transações',
                 style: TextStyle(
@@ -153,12 +160,14 @@ class MyHomePage extends ConsumerWidget {
                 }).map((transaction) {
                   final description =
                       transaction['description'] ?? 'Sem descrição';
+                  final category = transaction['category'] ?? 'Sem categoria';
                   final value = transaction['value'] != null
-                      ? 'R\$ ${transaction['value'].toStringAsFixed(2)}'
+                      ? transaction['value'].toString()
                       : 'Sem valor';
                   final isPositive = transaction['type'] == 'receita';
 
                   return TransactionItem(
+                    category: category,
                     description: description,
                     value: value,
                     isPositive: isPositive,
@@ -166,7 +175,6 @@ class MyHomePage extends ConsumerWidget {
                 }).toList(),
               ),
               const SizedBox(height: 32),
-              // Criar botão para limpar as transações
               GestureDetector(
                 onTap: () {
                   LocalPersistence.clearList('transactions').then((_) {
@@ -200,7 +208,7 @@ class MyHomePage extends ConsumerWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const AddTransactionDialog(); // Abre o diálogo de adicionar transação
+              return const AddTransactionDialog();
             },
           );
         },

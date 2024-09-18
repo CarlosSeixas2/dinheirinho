@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import '../providers/transaction_provider.dart'; // O caminho para o TransactionProvider
 
 class AddTransactionDialog extends StatefulWidget {
@@ -126,48 +125,53 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 13, 211, 145),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    height: 60,
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            _formKey.currentState?.save();
-
-                            // Utilizando o Riverpod para adicionar a transação
-                            transactionNotifier.addTransaction({
-                              'description': _description,
-                              'value': _value,
-                              'category': _category,
-                              'type': _isReceita ? 'receita' : 'despesa',
-                              // 'icon': _isReceita ? Icons.attach_money : Icons.money_off,
-                            });
-
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFA500),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      height: 60,
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
                             Navigator.of(context).pop();
-                          }
-                        },
-                        child: const Text('Salvar'),
+                          },
+                          child: const Text('Cancelar'),
+                        ),
                       ),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFA500),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    height: 60,
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Cancelar'),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 13, 211, 145),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      height: 60,
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              _formKey.currentState?.save();
+
+                              // Utilizando o Riverpod para adicionar a transação
+                              transactionNotifier.addTransaction({
+                                'description': _description,
+                                'value': _value,
+                                'category': _category,
+                                'type': _isReceita ? 'receita' : 'despesa',
+                                // 'icon': _isReceita ? Icons.attach_money : Icons.money_off,
+                              });
+
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          child: const Text('Salvar'),
+                        ),
                       ),
                     ),
                   ),

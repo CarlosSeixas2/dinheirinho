@@ -42,6 +42,7 @@ dependencies:
   provider: ^6.0.5
   shared_preferences: ^2.3.2
   mask_text_input_formatter: ^2.0.0
+  syncfusion_flutter_charts: ^26.2.14
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,8 @@ flutter:
     - assets/icons/wallet.svg
     - assets/icons/chart.svg
     - assets/icons/more.svg
+    - assets/icons/arrow_up.svg
+    - assets/icons/arrow_down.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
