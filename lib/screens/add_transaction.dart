@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import '../providers/transaction_provider.dart'; // O caminho para o TransactionProvider
+import '../providers/transaction_provider.dart';
 
 class AddTransactionDialog extends StatefulWidget {
   const AddTransactionDialog({super.key});
@@ -32,7 +31,7 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-          final transactionNotifier = ref.read(transactionProvider.notifier);
+        final transactionNotifier = ref.read(transactionProvider.notifier);
 
         return AlertDialog(
             backgroundColor: const Color(0xFF121212),
@@ -128,36 +127,7 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 13, 211, 145),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    height: 60,
-                    child: Center(
-                      child: TextButton(
-                        onPressed: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            _formKey.currentState?.save();
-
-                            // Utilizando o Riverpod para adicionar a transação
-                            transactionNotifier.addTransaction({
-                              'description': _description,
-                              'value': _value,
-                              'category': _category,
-                              'type': _isReceita ? 'receita' : 'despesa',
-                              // 'icon': _isReceita ? Icons.attach_money : Icons.money_off,
-                            });
-
-                            Navigator.of(context).pop();
-                          }
-                        },
-                        child: const Text('Salvar'),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFA500),
+                      color: Colors.red,
                       borderRadius: BorderRadius.circular(100),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -168,6 +138,38 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
                           Navigator.of(context).pop();
                         },
                         child: const Text('Cancelar'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF24F07D),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 60,
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            _formKey.currentState?.save();
+
+                            transactionNotifier.addTransaction({
+                              'description': _description,
+                              'value': _value,
+                              'category': _category,
+                              'type': _isReceita ? 'receita' : 'despesa',
+                            });
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: const Text('Salvar'),
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.white,
+                        ),
                       ),
                     ),
                   ),

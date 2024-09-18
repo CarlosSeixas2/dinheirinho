@@ -15,7 +15,7 @@ class TransactionDetailsPage extends ConsumerWidget {
         ? 'R\$ ${transaction['value'].toStringAsFixed(2)}'
         : 'Sem valor';
     final isPositive = transaction['type'] == 'receita';
-    final category = transaction['categoria'] ?? 'Sem categoria';
+    final category = transaction['category'] ?? '';
 
     void deleteTransaction() {
       ref.read(transactionProvider.notifier).removeTransaction(transaction);
@@ -33,13 +33,12 @@ class TransactionDetailsPage extends ConsumerWidget {
       if (updatedTransaction != null) {
         ref.read(transactionProvider.notifier).updateTransaction(transaction, updatedTransaction);
 
-        // Atualize a própria transação na tela de detalhes
-        Navigator.pop(context); // Fecha a tela atual
+        Navigator.pop(context);
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => TransactionDetailsPage(
-              transaction: updatedTransaction, // Reabre a tela com os dados atualizados
+              transaction: updatedTransaction,
             ),
           ),
         );

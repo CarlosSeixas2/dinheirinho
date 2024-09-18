@@ -4,19 +4,17 @@ import 'package:controle_financeiro/screens/add_transaction.dart';
 import 'package:controle_financeiro/screens/transitionItem.dart';
 import 'package:controle_financeiro/widgets/custom_bottom_bar.dart';
 import 'package:controle_financeiro/widgets/transaction_toggle.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'transaction_details_page.dart'; // Importe a nova página de detalhes
+import 'transaction_details_page.dart';
 
 class MyHomePage extends ConsumerWidget {
   const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final transactionNotifier =
-    ref.watch(transactionProvider.notifier);
+    final transactionNotifier = ref.watch(transactionProvider.notifier);
     final transactions = ref.watch(transactionProvider).transactions;
     final balance = ref.watch(transactionProvider).balance;
     final transactionType = ref.watch(transactionProvider).transactionType;
@@ -34,17 +32,19 @@ class MyHomePage extends ConsumerWidget {
             Text(
               transactionNotifier.formatToReal(balance),
               style: const TextStyle(
-                  fontSize: 24,
-                  color: Color(0xFFFFFFFF),
-                  fontWeight: FontWeight.bold),
+                fontSize: 24,
+                color: Color(0xFFFFFFFF),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 4),
             const Text(
               'Seu Saldo',
               style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Color(0xFF7A7A7A)),
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF7A7A7A),
+              ),
             ),
           ],
         ),
@@ -52,13 +52,14 @@ class MyHomePage extends ConsumerWidget {
         actions: [
           GestureDetector(
             onTap: () {
-              // Ação ao clicar
+              print('abrir as notificações');
             },
             child: SvgPicture.asset(
               'assets/icons/bell.svg',
               width: 20,
               height: 20,
-              colorFilter: const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
+              colorFilter:
+                  const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
             ),
           ),
           const SizedBox(width: 16),
@@ -76,7 +77,9 @@ class MyHomePage extends ConsumerWidget {
                   TransactionToggle(
                     transactionType: transactionType,
                     onToggle: (type) {
-                      ref.read(transactionProvider.notifier).setTransactionType(type);
+                      ref
+                          .read(transactionProvider.notifier)
+                          .setTransactionType(type);
                     },
                   ),
                   const SizedBox(width: 16),
@@ -91,8 +94,9 @@ class MyHomePage extends ConsumerWidget {
                       child: Center(
                         child: DropdownButton<String>(
                           style: const TextStyle(
-                              color: Colors.white,
-                              backgroundColor: Color(0xFF121212)),
+                            color: Colors.white,
+                            backgroundColor: Color(0xFF121212),
+                          ),
                           value: selectedMonth,
                           icon: const Icon(Icons.arrow_drop_down),
                           underline: const SizedBox(),
@@ -139,9 +143,6 @@ class MyHomePage extends ConsumerWidget {
               const SizedBox(height: 16),
               Column(
                 children: transactions.where((transaction) {
-                  if (kDebugMode) {
-                    print(transaction);
-                  }
                   return transaction['type'] ==
                       (transactionType == TransactionType.despesas
                           ? 'despesa'
@@ -153,6 +154,7 @@ class MyHomePage extends ConsumerWidget {
                       ? 'R\$ ${transaction['value'].toStringAsFixed(2)}'
                       : 'Sem valor';
                   final isPositive = transaction['type'] == 'receita';
+                  final category = transaction['category'] ?? 'Sem categoria';
 
                   return TransactionItem(
                     description: description,
@@ -168,6 +170,7 @@ class MyHomePage extends ConsumerWidget {
                         ),
                       );
                     },
+                    category: category
                   );
                 }).toList(),
               ),

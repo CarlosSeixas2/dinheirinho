@@ -5,14 +5,15 @@ class TransactionItem extends StatelessWidget {
   final String value;
   final bool isPositive;
   final VoidCallback onTap;
+  final String category;
 
-  const TransactionItem({
-    super.key,
-    required this.description,
-    required this.value,
-    required this.isPositive,
-    required this.onTap,
-  });
+  const TransactionItem(
+      {super.key,
+      required this.description,
+      required this.value,
+      required this.isPositive,
+      required this.onTap,
+      required this.category});
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,16 @@ class TransactionItem extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Colors.white, // Garantindo que o texto é visível
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // Adiciona um espaço entre a descrição e a categoria
+                  Text(
+                    category, // Aqui é onde adicionamos a categoria
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color:
+                          Colors.white70, // Uma cor mais clara para diferenciar
                     ),
                   ),
                 ],
