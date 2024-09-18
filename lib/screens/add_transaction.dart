@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/transaction_provider.dart'; // O caminho para o TransactionProvider
+import '../providers/transaction_provider.dart';
 
 class AddTransactionDialog extends StatefulWidget {
   const AddTransactionDialog({super.key});
@@ -158,13 +158,12 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
                             if (_formKey.currentState?.validate() ?? false) {
                               _formKey.currentState?.save();
 
-                              // Utilizando o Riverpod para adicionar a transação
                               transactionNotifier.addTransaction({
                                 'description': _description,
                                 'value': _value,
                                 'category': _category,
                                 'type': _isReceita ? 'receita' : 'despesa',
-                                // 'icon': _isReceita ? Icons.attach_money : Icons.money_off,
+                                'date': DateTime.now().toString(),
                               });
 
                               Navigator.of(context).pop();

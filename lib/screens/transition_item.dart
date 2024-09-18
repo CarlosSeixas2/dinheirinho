@@ -1,4 +1,3 @@
-import 'package:controle_financeiro/screens/view_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -14,6 +13,7 @@ class TransactionItem extends StatelessWidget {
   final String category;
   final String value;
   final bool isPositive;
+  final VoidCallback onTap;
 
   const TransactionItem({
     super.key,
@@ -21,28 +21,22 @@ class TransactionItem extends StatelessWidget {
     required this.category,
     required this.value,
     required this.isPositive,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // Navegar para a página de visualização da transação
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            // builder: (context) => const ViewTransaction(),
-            // Mandar qual transação foi clicada
-            builder: (context) => ViewTransaction(
-              description: description,
-              value: value,
-              isPositive: isPositive,
-            ),
-          ),
-        );
-      },
+      onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CircleAvatar(
               backgroundColor: isPositive
@@ -54,26 +48,27 @@ class TransactionItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  category,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    category,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const Spacer(),
             Text(
               // value,
               formatToReal(double.parse(value)),

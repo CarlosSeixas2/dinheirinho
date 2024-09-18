@@ -104,7 +104,8 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     final updatedTransactions =
         List<Map<String, dynamic>>.from(state.transactions)..add(transaction);
     state = state.copyWith(transactions: updatedTransactions);
-    _saveToPrefs(); // Salvar após a alteração
+    print('print $transaction');
+    _saveToPrefs();
   }
 
   double get balance {
@@ -127,6 +128,29 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
 
   void clearTransactions() {
     state = state.copyWith(transactions: []);
+  }
+
+  void removeTransaction(Map<String, dynamic> transaction) {
+    final updatedTransactions =
+        List<Map<String, dynamic>>.from(state.transactions)
+          ..remove(transaction);
+    state = state.copyWith(transactions: updatedTransactions);
+    _saveToPrefs();
+  }
+
+  void updateTransaction(Map<String, dynamic> oldTransaction,
+      Map<String, dynamic> updatedTransaction) {
+    final updatedTransactions =
+        List<Map<String, dynamic>>.from(state.transactions);
+    final transactionIndex = updatedTransactions.indexOf(oldTransaction);
+
+    if (transactionIndex != -1) {
+      updatedTransactions[transactionIndex] =
+          updatedTransaction; // Atualizar o item na posição correta
+    }
+
+    state = state.copyWith(transactions: updatedTransactions);
+    _saveToPrefs();
   }
 }
 

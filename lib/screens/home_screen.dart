@@ -1,13 +1,14 @@
 import 'package:controle_financeiro/helpers/local_persistence.dart';
-import 'package:controle_financeiro/screens/transitionItem.dart';
+import 'package:controle_financeiro/providers/transaction_provider.dart';
+import 'package:controle_financeiro/screens/add_transaction.dart';
+import 'package:controle_financeiro/screens/transaction_details_page.dart';
+import 'package:controle_financeiro/screens/transition_item.dart';
+import 'package:controle_financeiro/widgets/custom_bottom_bar.dart';
 import 'package:controle_financeiro/widgets/transaction_graphic.dart';
+import 'package:controle_financeiro/widgets/transaction_toggle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/transaction_provider.dart';
-import '../widgets/custom_bottom_bar.dart';
-import '../widgets/transaction_toggle.dart';
-import 'add_transaction.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomePage extends ConsumerWidget {
@@ -82,6 +83,9 @@ class MyHomePage extends ConsumerWidget {
                       ref
                           .read(transactionProvider.notifier)
                           .setTransactionType(type);
+                      ref
+                          .read(transactionProvider.notifier)
+                          .setTransactionType(type);
                     },
                   ),
                   const SizedBox(width: 16),
@@ -99,7 +103,7 @@ class MyHomePage extends ConsumerWidget {
                               color: Colors.white,
                               backgroundColor: Color(0xFF121212)),
                           value: selectedMonth,
-                          icon: const Icon(Icons.arrow_drop_down),
+                          icon: const Icon(Icons.keyboard_arrow_down_rounded),
                           underline: const SizedBox(),
                           onChanged: (String? newValue) {
                             if (newValue != null) {
@@ -171,6 +175,16 @@ class MyHomePage extends ConsumerWidget {
                     description: description,
                     value: value,
                     isPositive: isPositive,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TransactionDetailsPage(
+                            transaction: transaction,
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
               ),

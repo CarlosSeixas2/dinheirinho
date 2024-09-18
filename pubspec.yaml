@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^2.3.2
   mask_text_input_formatter: ^2.0.0
   syncfusion_flutter_charts: ^26.2.14
+  syncfusion_flutter_datepicker: ^26.2.14
 
 dev_dependencies:
   flutter_test:
