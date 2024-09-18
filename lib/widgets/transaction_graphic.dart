@@ -159,7 +159,7 @@ class TransactionGraphicWidget extends StatelessWidget {
                 dataLabelSettings: const DataLabelSettings(
                   isVisible: true,
                   color: Color(0xFF121212),
-                  labelPosition: ChartDataLabelPosition.outside,
+                  // labelPosition: ChartDataLabelPosition.outside,
                 ),
               ),
             ],

@@ -5,7 +5,6 @@ import 'dart:convert';
 
 enum TransactionType { receitas, despesas }
 
-// Classe que define o estado das transações
 class TransactionState {
   final TransactionType transactionType;
   final String selectedMonth;
@@ -41,7 +40,6 @@ class TransactionState {
     );
   }
 
-  // Converte o estado para um Map, útil para salvar no SharedPreferences
   Map<String, dynamic> toMap() {
     return {
       'transactionType':
@@ -51,7 +49,6 @@ class TransactionState {
     };
   }
 
-  // Cria um estado a partir de um Map, útil para carregar do SharedPreferences
   factory TransactionState.fromMap(Map<String, dynamic> map) {
     return TransactionState(
       transactionType: map['transactionType'] == 'receitas'
@@ -63,7 +60,6 @@ class TransactionState {
   }
 }
 
-// StateNotifier gerencia o estado das transações
 class TransactionNotifier extends StateNotifier<TransactionState> {
   TransactionNotifier()
       : super(TransactionState(
@@ -71,16 +67,14 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
           selectedMonth: 'Setembro',
           transactions: [],
         )) {
-    _loadFromPrefs(); // Carregar estado salvo ao inicializar
+    _loadFromPrefs();
   }
 
-  // Salva o estado atual no SharedPreferences
   Future<void> _saveToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('transaction_state', jsonEncode(state.toMap()));
   }
 
-  // Carrega o estado do SharedPreferences
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final stateJson = prefs.getString('transaction_state');
@@ -92,19 +86,19 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
 
   void setTransactionType(TransactionType type) {
     state = state.copyWith(transactionType: type);
-    _saveToPrefs(); // Salvar após a alteração
+    _saveToPrefs();
   }
 
   void setSelectedMonth(String month) {
     state = state.copyWith(selectedMonth: month);
-    _saveToPrefs(); // Salvar após a alteração
+    _saveToPrefs();
   }
 
   void addTransaction(Map<String, dynamic> transaction) {
     final updatedTransactions =
         List<Map<String, dynamic>>.from(state.transactions)..add(transaction);
     state = state.copyWith(transactions: updatedTransactions);
-    print('print $transaction');
+
     _saveToPrefs();
   }
 
