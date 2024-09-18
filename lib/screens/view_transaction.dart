@@ -3,14 +3,12 @@
 import 'package:flutter/material.dart';
 
 class ViewTransaction extends StatelessWidget {
-  final String id;
   final String description;
   final String value;
   final bool isPositive;
 
   const ViewTransaction({
     super.key,
-    required this.id,
     required this.description,
     required this.value,
     required this.isPositive,
@@ -24,16 +22,16 @@ class ViewTransaction extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text('Descrição: '),
-          Text('Valor: '),
-          Text('Categoria: '),
-          Text('Data: '),
+          const Text('Descrição: '),
+          const Text('Valor: '),
+          const Text('Categoria: '),
+          const Text('Data: '),
           // Deletar o item da lista
           ElevatedButton(
             onPressed: () {
               // Deletar a transação
             },
-            child: Text('Deletar'),
+            child: const Text('Deletar'),
           ),
         ],
       ),

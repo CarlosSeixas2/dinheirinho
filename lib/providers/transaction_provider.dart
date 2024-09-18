@@ -124,6 +124,10 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
         NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
     return currencyFormat.format(value);
   }
+
+  void clearTransactions() {
+    state = state.copyWith(transactions: []);
+  }
 }
 
 // Definindo o provider com StateNotifier

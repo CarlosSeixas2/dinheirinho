@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 class TransactionItem extends StatelessWidget {
   // final IconData icon;
-  final String id;
   final String description;
   final String value;
   final bool isPositive;
@@ -11,7 +10,6 @@ class TransactionItem extends StatelessWidget {
   const TransactionItem({
     super.key,
     // required this.icon,
-    required this.id,
     required this.description,
     required this.value,
     required this.isPositive,
@@ -27,7 +25,6 @@ class TransactionItem extends StatelessWidget {
             // builder: (context) => const ViewTransaction(),
             // Mandar qual transação foi clicada
             builder: (context) => ViewTransaction(
-              id: id,
               description: description,
               value: value,
               isPositive: isPositive,
@@ -39,26 +36,26 @@ class TransactionItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Row(
           children: [
-            // CircleAvatar(
-            //   backgroundColor: isPositive ? Colors.green : Colors.red,
-            //   child: Icon(
-            //     icon,
-            //     color: Colors.white,
-            //   ),
-            // ),
-            // const SizedBox(width: 16),
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Text(
-            //       description,
-            //       style: const TextStyle(
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.bold,
-            //       ),
-            //     ),
-            //   ],
-            // ),
+            CircleAvatar(
+              backgroundColor: isPositive ? Colors.green : Colors.red,
+              child: Icon(
+                isPositive ? Icons.attach_money : Icons.money_off,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  description,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
             const Spacer(),
             Text(
               value,

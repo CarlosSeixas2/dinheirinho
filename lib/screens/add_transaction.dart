@@ -11,42 +11,6 @@ class AddTransactionDialog extends StatefulWidget {
   AddTransactionDialogState createState() => AddTransactionDialogState();
 }
 
-class MaxValueFormatter extends TextInputFormatter {
-  final NumberFormat _formatter = NumberFormat.simpleCurrency(locale: 'pt_BR');
-  final int _maxValueLength = 9;
-
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    if (newValue.text.isEmpty) {
-      return newValue;
-    }
-
-    // Remove caracteres não numéricos e converte para inteiro
-    final int value =
-        int.tryParse(newValue.text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
-
-    final int clampedValue =
-        value.toString().length > _maxValueLength ? value : value;
-
-    if (value.toString().length > _maxValueLength) {
-      // Se o valor for maior que o máximo, retorna o valor antigo
-      return TextEditingValue(
-        text: oldValue.text,
-        selection: TextSelection.collapsed(offset: oldValue.text.length),
-      );
-    }
-
-    // Formata o valor como moeda
-    final String formattedValue = _formatter.format(clampedValue / 100);
-
-    return TextEditingValue(
-      text: formattedValue,
-      selection: TextSelection.collapsed(offset: formattedValue.length),
-    );
-  }
-}
-
 class AddTransactionDialogState extends State<AddTransactionDialog> {
   final _formKey = GlobalKey<FormState>();
   String _description = '';
@@ -71,145 +35,145 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
         final transactionNotifier = ref.read(transactionProvider.notifier);
 
         return AlertDialog(
-          backgroundColor: const Color(0xFF121212),
-          alignment: Alignment.center,
-          title: const Text('Nova Transação',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              )),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+            backgroundColor: const Color(0xFF121212),
+            alignment: Alignment.center,
+            title: const Text('Nova Transação',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      decoration: const InputDecoration(labelText: 'Título'),
+                      onSaved: (value) {
+                        _description = value ?? '';
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor insira um título';
+                        }
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      decoration: const InputDecoration(labelText: 'Valor'),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                      ],
+                      onSaved: (value) {
+                        _value = double.tryParse(value ?? '0') ?? 0;
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor insira um valor válido';
+                        }
+                        return null;
+                      },
+                    ),
+                    DropdownButtonFormField<String>(
+                      value: _category,
+                      decoration: const InputDecoration(labelText: 'Categoria'),
+                      items: _categories.map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(category),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _category = newValue!;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Por favor selecione uma categoria';
+                        }
+                        return null;
+                      },
+                      dropdownColor: const Color(0xFF121212),
+                      borderRadius: BorderRadius.circular(10),
+                      icon: const Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: Colors.white,
+                        size: 15,
+                      ),
+                    ),
+                    SwitchListTile(
+                      title: Text(_isReceita ? 'Receita' : 'Despesa'),
+                      value: _isReceita,
+                      onChanged: (value) {
+                        setState(() {
+                          _isReceita = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Título'),
-                    onSaved: (value) {
-                      _description = value ?? '';
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor insira um título';
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Valor'),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      MaxValueFormatter(),
-                    ],
-                    onSaved: (value) {
-                      _value = double.tryParse(value ?? '0') ?? 0;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor insira um valor válido';
-                      }
-                      return null;
-                    },
-                  ),
-                  DropdownButtonFormField<String>(
-                    value: _category,
-                    decoration: const InputDecoration(labelText: 'Categoria'),
-                    items: _categories.map((String category) {
-                      return DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _category = newValue!;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Por favor selecione uma categoria';
-                      }
-                      return null;
-                    },
-                    dropdownColor: const Color(0xFF121212),
-                    borderRadius: BorderRadius.circular(10),
-                    icon: const Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: Colors.white,
-                      size: 15,
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 13, 211, 145),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 60,
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            _formKey.currentState?.save();
+
+                            // Utilizando o Riverpod para adicionar a transação
+                            transactionNotifier.addTransaction({
+                              'description': _description,
+                              'value': _value,
+                              'category': _category,
+                              'type': _isReceita ? 'receita' : 'despesa',
+                              // 'icon': _isReceita ? Icons.attach_money : Icons.money_off,
+                            });
+
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: const Text('Salvar'),
+                      ),
                     ),
                   ),
-                  SwitchListTile(
-                    title: Text(_isReceita ? 'Receita' : 'Despesa'),
-                    value: _isReceita,
-                    onChanged: (value) {
-                      setState(() {
-                        _isReceita = value;
-                      });
-                    },
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFA500),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 60,
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancelar'),
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-          ),
-          actions: [
-            Expanded(
-                child: Container(
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 13, 211, 145),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              height: 60,
-              child: Center(
-                child: TextButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      _formKey.currentState?.save();
-
-                      // Utilizando o Riverpod para adicionar a transação
-                      transactionNotifier.addTransaction({
-                        'description': _description,
-                        'value': _value,
-                        'category': _category,
-                        'type': _isReceita ? 'receita' : 'despesa',
-                        // 'icon': _isReceita ? Icons.attach_money : Icons.money_off,
-                      });
-
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: const Text('Salvar'),
-                ),
-              ),
-            )),
-            Expanded(
-                child: Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFFFA500),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              height: 60,
-              child: Center(
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancelar'),
-                  // Mudar a cor do botão de cancelar
-                ),
-              ),
-            )),
-          ],
-        );
+            ]);
       },
     );
   }

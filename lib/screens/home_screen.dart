@@ -1,5 +1,6 @@
 import 'package:controle_financeiro/helpers/local_persistence.dart';
 import 'package:controle_financeiro/screens/transitionItem.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // Para usar o Riverpod
 import '../providers/transaction_provider.dart';
@@ -141,28 +142,36 @@ class MyHomePage extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
               Column(
-                children: transactions
-                    .where((transaction) {
-                      return transaction['type'] ==
-                          (transactionType == TransactionType.despesas
-                              ? 'despesa'
-                              : 'receita');
-                    })
-                    .map((transaction) => TransactionItem(
-                          // icon: transaction['icon'],
-                          // description: transaction['description'],
-                          value:
-                              'R\$ ${transaction['value'].toStringAsFixed(2)}',
-                          isPositive: transaction['type'] == 'receita',
-                        ))
-                    .toList(),
+                children: transactions.where((transaction) {
+                  if (kDebugMode) {
+                    print(transaction);
+                  }
+                  return transaction['type'] ==
+                      (transactionType == TransactionType.despesas
+                          ? 'despesa'
+                          : 'receita');
+                }).map((transaction) {
+                  final description =
+                      transaction['description'] ?? 'Sem descrição';
+                  final value = transaction['value'] != null
+                      ? 'R\$ ${transaction['value'].toStringAsFixed(2)}'
+                      : 'Sem valor';
+                  final isPositive = transaction['type'] == 'receita';
+
+                  return TransactionItem(
+                    description: description,
+                    value: value,
+                    isPositive: isPositive,
+                  );
+                }).toList(),
               ),
               const SizedBox(height: 32),
               // Criar botão para limpar as transações
               GestureDetector(
                 onTap: () {
-                  LocalPersistence.clearList(
-                      'transactions'); // Limpa as transações salvas
+                  LocalPersistence.clearList('transactions').then((_) {
+                    ref.read(transactionProvider.notifier).clearTransactions();
+                  });
                 },
                 child: Container(
                   padding: const EdgeInsets.all(16),
@@ -170,10 +179,10 @@ class MyHomePage extends ConsumerWidget {
                     color: const Color(0xFF24F07D),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Limpar Transações',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
