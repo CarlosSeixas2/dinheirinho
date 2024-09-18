@@ -1,40 +1,32 @@
-import 'package:controle_financeiro/screens/view_transaction.dart';
 import 'package:flutter/material.dart';
 
 class TransactionItem extends StatelessWidget {
-  // final IconData icon;
   final String description;
   final String value;
   final bool isPositive;
+  final VoidCallback onTap;
 
   const TransactionItem({
     super.key,
-    // required this.icon,
     required this.description,
     required this.value,
     required this.isPositive,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // Navegar para a página de visualização da transação
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            // builder: (context) => const ViewTransaction(),
-            // Mandar qual transação foi clicada
-            builder: (context) => ViewTransaction(
-              description: description,
-              value: value,
-              isPositive: isPositive,
-            ),
-          ),
-        );
-      },
+      onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.all(16),
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+        ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CircleAvatar(
               backgroundColor: isPositive ? Colors.green : Colors.red,
@@ -44,19 +36,21 @@ class TransactionItem extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    description,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white, // Garantindo que o texto é visível
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const Spacer(),
             Text(
               value,
               style: TextStyle(

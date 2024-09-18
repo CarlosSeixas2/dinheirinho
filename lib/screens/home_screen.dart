@@ -1,24 +1,23 @@
 import 'package:controle_financeiro/helpers/local_persistence.dart';
+import 'package:controle_financeiro/providers/transaction_provider.dart';
+import 'package:controle_financeiro/screens/add_transaction.dart';
 import 'package:controle_financeiro/screens/transitionItem.dart';
+import 'package:controle_financeiro/widgets/custom_bottom_bar.dart';
+import 'package:controle_financeiro/widgets/transaction_toggle.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Para usar o Riverpod
-import '../providers/transaction_provider.dart';
-import '../widgets/custom_bottom_bar.dart';
-import '../widgets/transaction_toggle.dart';
-import 'add_transaction.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'transaction_details_page.dart'; // Importe a nova página de detalhes
 
 class MyHomePage extends ConsumerWidget {
-  // ConsumerWidget para acessar os providers
   const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionNotifier =
-        ref.watch(transactionProvider.notifier); // Acessa o notifier
-    final transactions =
-        ref.watch(transactionProvider).transactions; // Acessa o estado
+    ref.watch(transactionProvider.notifier);
+    final transactions = ref.watch(transactionProvider).transactions;
     final balance = ref.watch(transactionProvider).balance;
     final transactionType = ref.watch(transactionProvider).transactionType;
     final selectedMonth = ref.watch(transactionProvider).selectedMonth;
@@ -59,8 +58,7 @@ class MyHomePage extends ConsumerWidget {
               'assets/icons/bell.svg',
               width: 20,
               height: 20,
-              colorFilter:
-                  const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
             ),
           ),
           const SizedBox(width: 16),
@@ -78,8 +76,7 @@ class MyHomePage extends ConsumerWidget {
                   TransactionToggle(
                     transactionType: transactionType,
                     onToggle: (type) {
-                      ref.read(transactionProvider.notifier).setTransactionType(
-                          type); // Atualiza o tipo de transação
+                      ref.read(transactionProvider.notifier).setTransactionType(type);
                     },
                   ),
                   const SizedBox(width: 16),
@@ -103,8 +100,7 @@ class MyHomePage extends ConsumerWidget {
                             if (newValue != null) {
                               ref
                                   .read(transactionProvider.notifier)
-                                  .setSelectedMonth(
-                                      newValue); // Atualiza o mês selecionado
+                                  .setSelectedMonth(newValue);
                             }
                           },
                           items: <String>[
@@ -162,11 +158,20 @@ class MyHomePage extends ConsumerWidget {
                     description: description,
                     value: value,
                     isPositive: isPositive,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TransactionDetailsPage(
+                            transaction: transaction,
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
               ),
               const SizedBox(height: 32),
-              // Criar botão para limpar as transações
               GestureDetector(
                 onTap: () {
                   LocalPersistence.clearList('transactions').then((_) {
@@ -200,7 +205,7 @@ class MyHomePage extends ConsumerWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const AddTransactionDialog(); // Abre o diálogo de adicionar transação
+              return const AddTransactionDialog();
             },
           );
         },

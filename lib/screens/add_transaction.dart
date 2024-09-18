@@ -32,7 +32,7 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final transactionNotifier = ref.read(transactionProvider.notifier);
+          final transactionNotifier = ref.read(transactionProvider.notifier);
 
         return AlertDialog(
             backgroundColor: const Color(0xFF121212),
