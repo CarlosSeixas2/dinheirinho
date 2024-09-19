@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Importa o Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'screens/home_screen.dart';
 
 void main() {
   runApp(
     const ProviderScope(
-      // ProviderScope substitui MultiProvider
       child: MyApp(),
     ),
   );
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData.dark(),
       home:
-          const MyHomePage(), // Atualize para a nova HomePage que usa Riverpod
+          const MyHomePage(),
     );
   }
 }

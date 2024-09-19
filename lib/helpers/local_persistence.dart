@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalPersistence {
-  // Criar método para adicionar mais um item na lista
+  // método para adicionar mais um item na lista
   static Future<void> addToList(String key, String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> list = prefs.getStringList(key) ?? [];
@@ -9,13 +9,13 @@ class LocalPersistence {
     await prefs.setStringList(key, list);
   }
 
-  // Criar método para pegar um item da lista
+  // método para pegar um item da lista
   static Future<List<String>> getList(String key) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getStringList(key) ?? [];
   }
 
-  // Criar método para atualizar um item da lista
+  // método para atualizar um item da lista
   static Future<void> updateList(
       String key, String oldValue, String newValue) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -29,7 +29,7 @@ class LocalPersistence {
     }
   }
 
-  // Criar método para remover um item da lista
+  // método para remover um item da lista
   static Future<void> removeFromList(String key, String value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> list = prefs.getStringList(key) ?? [];

@@ -6,8 +6,11 @@ import 'dart:convert';
 enum TransactionType { receitas, despesas }
 
 class TransactionState {
+  // tipo atual da transação(receita ou despesa)
   final TransactionType transactionType;
+  // mês atual
   final String selectedMonth;
+  // lista de transações
   final List<Map<String, dynamic>> transactions;
 
   TransactionState({
@@ -16,6 +19,7 @@ class TransactionState {
     required this.transactions,
   });
 
+  // Calculo do saldo atual
   double get balance {
     double balance = 0.0;
     for (var transaction in transactions) {
@@ -28,6 +32,7 @@ class TransactionState {
     return balance;
   }
 
+  // Retorna uma cópia do estado com possíveis mudanças em seus valores.
   TransactionState copyWith({
     TransactionType? transactionType,
     String? selectedMonth,
@@ -40,6 +45,7 @@ class TransactionState {
     );
   }
 
+  // Converte o estado atual para um mapa (para salvar no SharedPreferences).
   Map<String, dynamic> toMap() {
     return {
       'transactionType':
@@ -49,6 +55,7 @@ class TransactionState {
     };
   }
 
+  // Cria uma instância de `TransactionState` a partir de um mapa.
   factory TransactionState.fromMap(Map<String, dynamic> map) {
     return TransactionState(
       transactionType: map['transactionType'] == 'receitas'
@@ -61,6 +68,7 @@ class TransactionState {
 }
 
 class TransactionNotifier extends StateNotifier<TransactionState> {
+  // Construtor que inicializa o estado e carrega dados salvos das preferências.
   TransactionNotifier()
       : super(TransactionState(
           transactionType: TransactionType.despesas,
@@ -70,11 +78,13 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     _loadFromPrefs();
   }
 
+  // Função para salvar o estado atual no SharedPreferences.
   Future<void> _saveToPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('transaction_state', jsonEncode(state.toMap()));
   }
 
+  // Função para carregar o estado salvo do SharedPreferences.
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     final stateJson = prefs.getString('transaction_state');
@@ -84,16 +94,19 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     }
   }
 
+  // Define o tipo de transação (receitas ou despesas) e salva a mudança.
   void setTransactionType(TransactionType type) {
     state = state.copyWith(transactionType: type);
     _saveToPrefs();
   }
 
+  // Define o mês selecionado e salva a mudança.
   void setSelectedMonth(String month) {
     state = state.copyWith(selectedMonth: month);
     _saveToPrefs();
   }
 
+  // Adiciona uma nova transação e salva o estado.
   void addTransaction(Map<String, dynamic> transaction) {
     final updatedTransactions =
         List<Map<String, dynamic>>.from(state.transactions)..add(transaction);
@@ -102,28 +115,19 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     _saveToPrefs();
   }
 
-  double get balance {
-    double balance = 0.0;
-    for (var transaction in state.transactions) {
-      if (transaction['type'] == 'receita') {
-        balance += transaction['value'];
-      } else {
-        balance -= transaction['value'];
-      }
-    }
-    return balance;
-  }
-
+  // Formata um valor monetário para o formato brasileiro (R$).
   String formatToReal(double value) {
     final NumberFormat currencyFormat =
         NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
     return currencyFormat.format(value);
   }
 
+  // Limpa todas as transações (reset) e salva o estado atualizado.
   void clearTransactions() {
     state = state.copyWith(transactions: []);
   }
 
+  // Remove uma transação específica da lista e salva o estado.
   void removeTransaction(Map<String, dynamic> transaction) {
     final updatedTransactions =
         List<Map<String, dynamic>>.from(state.transactions)
@@ -132,6 +136,7 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
     _saveToPrefs();
   }
 
+  // Atualiza uma transação específica na lista e salva o estado.
   void updateTransaction(Map<String, dynamic> oldTransaction,
       Map<String, dynamic> updatedTransaction) {
     final updatedTransactions =
@@ -148,7 +153,7 @@ class TransactionNotifier extends StateNotifier<TransactionState> {
   }
 }
 
-// Definindo o provider com StateNotifier
+// Define o provider que gerencia o estado das transações usando `TransactionNotifier`.
 final transactionProvider =
     StateNotifierProvider<TransactionNotifier, TransactionState>(
   (ref) => TransactionNotifier(),

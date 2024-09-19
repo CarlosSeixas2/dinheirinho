@@ -33,7 +33,7 @@ class CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         children: [
           _buildNavItem(0, 'assets/icons/wallet.svg', 'Carteira'),
           // _buildNavItem(1, 'assets/icons/chart.svg', 'Relatórios'),
-          _buildNavItem(1, 'assets/icons/more.svg', 'Mais'),
+          // _buildNavItem(1, 'assets/icons/more.svg', 'Mais'),
         ],
       ),
     );

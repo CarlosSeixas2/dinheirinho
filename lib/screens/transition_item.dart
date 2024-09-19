@@ -65,16 +65,6 @@ class TransactionItem extends StatelessWidget {
                       color: Colors.grey,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  // Adiciona um espaço entre a descrição e a categoria
-                  Text(
-                    category, // Aqui é onde adicionamos a categoria
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color:
-                          Colors.white70, // Uma cor mais clara para diferenciar
-                    ),
-                  ),
                 ],
               ),
             ),

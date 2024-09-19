@@ -128,7 +128,7 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFA500),
+                        color: Colors.red,
                         borderRadius: BorderRadius.circular(100),
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -138,7 +138,12 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: const Text('Cancelar'),
+                          child: const Text(
+                            'Cancelar',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -147,7 +152,7 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 13, 211, 145),
+                        color: const Color(0xFF24F07D),
                         borderRadius: BorderRadius.circular(100),
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -169,7 +174,12 @@ class AddTransactionDialogState extends State<AddTransactionDialog> {
                               Navigator.of(context).pop();
                             }
                           },
-                          child: const Text('Salvar'),
+                          child: const Text(
+                            'Salvar',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ),

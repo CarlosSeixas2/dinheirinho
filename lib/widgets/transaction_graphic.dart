@@ -25,8 +25,6 @@ class TransactionGraphicWidget extends StatelessWidget {
   List<PieData> getPieData(List<Map<String, dynamic>> transactions) {
     final Map<String, double> categoryTotals = {};
 
-    // for (final transaction in transactions) {
-    // Pegar apenas as transações do tipo selecionado
     for (final transaction in transactions.where((transaction) {
       return transaction['type'] ==
           (transactionType == TransactionType.despesas ? 'despesa' : 'receita');
@@ -159,7 +157,6 @@ class TransactionGraphicWidget extends StatelessWidget {
                 dataLabelSettings: const DataLabelSettings(
                   isVisible: true,
                   color: Color(0xFF121212),
-                  // labelPosition: ChartDataLabelPosition.outside,
                 ),
               ),
             ],
